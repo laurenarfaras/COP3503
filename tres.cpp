@@ -38,6 +38,7 @@ int main(int argc, char **args) {
 
   bool equals = false;
   bool semicolon = false;
+  bool comma = false;
 
   while (ifs) {
     std::string temp_in;
@@ -109,6 +110,22 @@ int main(int argc, char **args) {
         ++z;
         fire = "";
       }
+    } else if ((int)temp_in.at(0) == 40) {
+      std::string parent;
+      for (int y = 0; y < temp_in.size(); y++) {
+        if ((int)temp_in.at(y) == 40) {
+          identifiers[z] = parent;
+          ++z;
+          parent = "";
+        }else if ((int)temp_in.at(y) >= 97 && (int)temp_in.at(y) <= 122) {
+          parent = parent + temp_in.at(y);
+        }else if ((int)temp_in.at(y) == 44) {
+          comma = true;
+          identifiers[z] = parent;
+          ++z;
+          parent = "";
+        }
+      }
     }
 
   }
@@ -148,6 +165,9 @@ int main(int argc, char **args) {
   std::cout << "Delimiter(s): ";
   if (semicolon) {
     std::cout << "; ";
+  }
+  if (comma) {
+    std::cout << ",";
   }
   std::cout << "" << std::endl;
 
