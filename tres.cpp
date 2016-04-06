@@ -25,6 +25,8 @@ int main(int argc, char **args) {
   std::string syntaxErr[100];
   int z = 0;
   std::string identifiers[100];
+  int w = 0;
+  std::string constants[100];
 
   bool fur = false;
   int depth = 0;
@@ -114,17 +116,46 @@ int main(int argc, char **args) {
       std::string parent;
       for (int y = 0; y < temp_in.size(); y++) {
         if ((int)temp_in.at(y) == 40) {
-          identifiers[z] = parent;
-          ++z;
-          parent = "";
+          if (parent.compare("") != 0) {
+            identifiers[z] = parent;
+            ++z;
+            parent = "";
+          }
         }else if ((int)temp_in.at(y) >= 97 && (int)temp_in.at(y) <= 122) {
           parent = parent + temp_in.at(y);
         }else if ((int)temp_in.at(y) == 44) {
           comma = true;
-          identifiers[z] = parent;
-          ++z;
-          parent = "";
+          if (parent.compare("") != 0) {
+            identifiers[z] = parent;
+            ++z;
+            parent = "";
+          }
         }
+      }
+      if (parent.compare("") != 0) {
+        identifiers[z] = parent;
+        ++z;
+        parent = "";
+      }
+    } else if ((int)temp_in.at(0) >= 48 && (int)temp_in.at(0) <= 57) {
+      std::string nochange;
+      for (int x = 0; x < temp_in.size(); x++) {
+        if ((int)temp_in.at(x) >= 48 && (int)temp_in.at(x) <= 57) {
+          nochange = nochange + temp_in.at(x);
+        } else if ((int)temp_in.at(x) == 44) {
+          comma = true;
+          if (nochange.compare("") != 0) {
+            constants[w] = nochange;
+            ++w;
+            nochange = "";
+          }
+
+        }
+      }
+      if (nochange.compare("") != 0) {
+        constants[w] = nochange;
+        ++w;
+        nochange = "";
       }
     }
 
@@ -168,6 +199,12 @@ int main(int argc, char **args) {
   }
   if (comma) {
     std::cout << ",";
+  }
+  std::cout << "" << std::endl;
+
+  std::cout << "Constant(s): ";
+  for (int v = 0; v < w; v++) {
+    std::cout << constants[v] << " ";
   }
   std::cout << "" << std::endl;
 
