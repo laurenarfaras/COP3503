@@ -15,6 +15,7 @@ bool search(std::string data[], std::string search, int size) {
   }
 
   return found;
+
 }
 
 
@@ -26,16 +27,18 @@ int main(int argc, char **args) {
     return 1;
   }
 
-  //std::cout << "hello you made it" << std::endl;
-
   Stack s;
 
   //make a string of the name of the file
   std::string filename(args[1]);
-  //std::cout << filename << std::endl;
 
-  //read from the file test1.txt
-  std::ifstream ifs("test1.txt");
+  //read from the file
+  std::ifstream ifs(filename);
+  if (!ifs.is_open()) {
+    std::cout << "file " << filename << " not found" << std::endl;
+    return 1;
+  }
+
   int i = 0;
   std::string syntaxErr[100];
   int z = 0;
@@ -70,13 +73,11 @@ int main(int argc, char **args) {
   while (ifs) {
     std::string temp_in;
     ifs >> temp_in;
-    //std::cout << temp_in << std::endl;
     if (temp_in.compare("") == 0) {
       break;
     }
     //check for the keyword FOR
     else if (temp_in.compare(keyfor) == 0) {
-      //std::cout << "I am in the FOR if statement" << std::endl;
       fur = true;
       rof = true;
       s.push("FOR");
@@ -90,12 +91,6 @@ int main(int argc, char **args) {
     else if (temp_in.compare(keybegin) == 0) {
       nigeb = true;
       if (fur) {
-        //std::cout << "I should be increasing depth" << std::endl;
-        //s.push("BEGIN");
-        //depth = s.size();
-        //if (depth > max_depth) {
-        //  max_depth = depth;
-        //}
         fur = false;
       }
     }
@@ -111,7 +106,6 @@ int main(int argc, char **args) {
         syntaxErr[i] = temp_in;
         ++i;
       }
-      //std::cout << "i=" << i << std::endl;
     }
     //check to see if an identifier
     else if ((int)temp_in.at(0) >= 97 && (int)temp_in.at(0) <= 122) {
@@ -299,18 +293,5 @@ int main(int argc, char **args) {
     std::cout << syntaxErr[j];
   }
   std::cout << "" << std::endl;
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 }
