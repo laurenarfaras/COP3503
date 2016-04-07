@@ -41,6 +41,14 @@ int main(int argc, char **args) {
   bool equals = false;
   bool semicolon = false;
   bool comma = false;
+  bool p1 = false;
+  bool p2 = false;
+  bool plusplus = false;
+  bool plus = false;
+  bool doubleminus = false;
+  bool minus = false;
+  bool multiply = false;
+  bool divide = false;
 
   while (ifs) {
     std::string temp_in;
@@ -157,6 +165,28 @@ int main(int argc, char **args) {
         ++w;
         nochange = "";
       }
+    } else if ((int)temp_in.at(0) == 43) {
+      if (temp_in.size() > 1) {
+        if ((int)temp_in.at(1) == 43) {
+          plusplus = true;
+        }
+      } else {
+        plus = true;
+      }
+    } else if ((int)temp_in.at(0) == 45) {
+      if (temp_in.size() > 1) {
+        if ((int)temp_in.at(1) == 45) {
+          doubleminus = true;
+        }
+      } else {
+        minus = true;
+      }
+    } else if ((int)temp_in.at(0) == 42) {
+      multiply = true;
+    } else if ((int)temp_in.at(0) == 61) {
+      equals = true;
+    } else if ((int)temp_in.at(0) == 47) {
+      divide = true;
     }
 
   }
@@ -191,6 +221,24 @@ int main(int argc, char **args) {
   if (equals) {
     std::cout << "= ";
   }
+  if (plus) {
+    std::cout << "+ ";
+  }
+  if (plusplus) {
+    std::cout << "++ ";
+  }
+  if (minus) {
+    std::cout << "- ";
+  }
+  if (doubleminus) {
+    std::cout << "-- ";
+  }
+  if (multiply) {
+    std::cout << "* ";
+  }
+  if (divide) {
+    std::cout << "/ ";
+  }
   std::cout << "" << std::endl;
 
   std::cout << "Delimiter(s): ";
@@ -207,6 +255,9 @@ int main(int argc, char **args) {
     std::cout << constants[v] << " ";
   }
   std::cout << "" << std::endl;
+
+
+
 
 
 }
