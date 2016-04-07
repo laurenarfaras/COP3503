@@ -3,6 +3,21 @@
 #include <string>
 #include "tres.h"
 
+
+bool search(std::string data[], std::string search, int size) {
+
+  bool found = false;
+
+  for (int i = 0; i < size; i++) {
+    if (data[i].compare(search) == 0) {
+      found = true;
+    }
+  }
+
+  return found;
+}
+
+
 int main(int argc, char **args) {
 
   if (argc !=2) {
@@ -11,13 +26,13 @@ int main(int argc, char **args) {
     return 1;
   }
 
-  std::cout << "hello you made it" << std::endl;
+  //std::cout << "hello you made it" << std::endl;
 
   Stack s;
 
   //make a string of the name of the file
   std::string filename(args[1]);
-  std::cout << filename << std::endl;
+  //std::cout << filename << std::endl;
 
   //read from the file test1.txt
   std::ifstream ifs("test1.txt");
@@ -50,10 +65,12 @@ int main(int argc, char **args) {
   bool multiply = false;
   bool divide = false;
 
+  bool found = false;
+
   while (ifs) {
     std::string temp_in;
     ifs >> temp_in;
-    std::cout << temp_in << std::endl;
+    //std::cout << temp_in << std::endl;
     if (temp_in.compare("") == 0) {
       break;
     }
@@ -89,8 +106,11 @@ int main(int argc, char **args) {
     }
     //check to see there is a syntax error
     else if ((int)temp_in.at(0) >= 65 && (int)temp_in.at(0) <= 90) {
-      syntaxErr[i] = temp_in;
-      ++i;
+      found = search(syntaxErr, temp_in, i);
+      if (!found) {
+        syntaxErr[i] = temp_in;
+        ++i;
+      }
       //std::cout << "i=" << i << std::endl;
     }
     //check to see if an identifier
@@ -102,48 +122,68 @@ int main(int argc, char **args) {
         } else if ((int)temp_in.at(a) == 61) {
           equals = true;
           if (fire.compare("") != 0) {
-            identifiers[z] = fire;
-            ++z;
-            fire = "";
+            found = search(identifiers, fire, z);
+            if (!found) {
+              identifiers[z] = fire;
+              ++z;
+              fire = "";
+            }
           }
+          fire = "";
         } else if ((int)temp_in.at(a) == 59) {
           semicolon = true;
           if (fire.compare("") != 0) {
-            identifiers[z] = fire;
-            ++z;
-            fire = "";
+            found = search(identifiers, fire, z);
+            if (!found) {
+              identifiers[z] = fire;
+              ++z;
+              fire = "";
+            }
           }
+          fire = "";
         }
       }
       if (fire.compare("") != 0) {
-        identifiers[z] = fire;
-        ++z;
-        fire = "";
+        found = search(identifiers, fire, z);
+        if (!found) {
+          identifiers[z] = fire;
+          ++z;
+          fire = "";
+        }
       }
     } else if ((int)temp_in.at(0) == 40) {
       std::string parent;
       for (int y = 0; y < temp_in.size(); y++) {
         if ((int)temp_in.at(y) == 40) {
           if (parent.compare("") != 0) {
-            identifiers[z] = parent;
-            ++z;
-            parent = "";
+            found = search(identifiers, parent, z);
+            if (!found) {
+              identifiers[z] = parent;
+              ++z;
+              parent = "";
+            }
           }
         }else if ((int)temp_in.at(y) >= 97 && (int)temp_in.at(y) <= 122) {
           parent = parent + temp_in.at(y);
         }else if ((int)temp_in.at(y) == 44) {
           comma = true;
           if (parent.compare("") != 0) {
-            identifiers[z] = parent;
-            ++z;
-            parent = "";
+            found = search(identifiers, parent, z);
+            if (!found) {
+              identifiers[z] = parent;
+              ++z;
+              parent = "";
+            }
           }
         }
       }
       if (parent.compare("") != 0) {
-        identifiers[z] = parent;
-        ++z;
-        parent = "";
+        found = search(identifiers, parent, z);
+        if (!found) {
+          identifiers[z] = parent;
+          ++z;
+          parent = "";
+        }
       }
     } else if ((int)temp_in.at(0) >= 48 && (int)temp_in.at(0) <= 57) {
       std::string nochange;
@@ -153,17 +193,23 @@ int main(int argc, char **args) {
         } else if ((int)temp_in.at(x) == 44) {
           comma = true;
           if (nochange.compare("") != 0) {
-            constants[w] = nochange;
-            ++w;
-            nochange = "";
+            found = search(constants, nochange, w);
+            if (!found) {
+              constants[w] = nochange;
+              ++w;
+              nochange = "";
+            }
           }
 
         }
       }
       if (nochange.compare("") != 0) {
-        constants[w] = nochange;
-        ++w;
-        nochange = "";
+        found = search(constants, nochange, w);
+        if (!found) {
+          constants[w] = nochange;
+          ++w;
+          nochange = "";
+        }
       }
     } else if ((int)temp_in.at(0) == 43) {
       if (temp_in.size() > 1) {
@@ -194,7 +240,7 @@ int main(int argc, char **args) {
   ifs.close();
 
   std::cout << "Maximum depth of the nested loop(s): " << max_depth << std::endl;
-  std::cout << "\nKeywords: ";
+  std::cout << "Keywords: ";
   if (rof) {
     std::cout << "FOR ";
   } if (nigeb) {
@@ -203,29 +249,27 @@ int main(int argc, char **args) {
     std::cout << "END "<< std::endl;
   }
 
-  std::cout << "Syntax Error(s): ";
-  for (int j = 0; j < i; j++) {
-    std::cout << syntaxErr[j];
-  }
-  std::cout << "" << std::endl;
-
-  //std::cout << "identifire: " << identifiers[0] << std::endl;
-
   std::cout << "Identifier(s): ";
   for (int k = 0; k < z; k++) {
     std::cout << identifiers[k] << " ";
   }
   std::cout << "" << std::endl;
 
+  std::cout << "Constant(s): ";
+  for (int v = 0; v < w; v++) {
+    std::cout << constants[v] << " ";
+  }
+  std::cout << "" << std::endl;
+
   std::cout << "Operator(s): ";
+  if (plusplus) {
+    std::cout << "++ ";
+  }
   if (equals) {
     std::cout << "= ";
   }
   if (plus) {
     std::cout << "+ ";
-  }
-  if (plusplus) {
-    std::cout << "++ ";
   }
   if (minus) {
     std::cout << "- ";
@@ -250,11 +294,20 @@ int main(int argc, char **args) {
   }
   std::cout << "" << std::endl;
 
-  std::cout << "Constant(s): ";
-  for (int v = 0; v < w; v++) {
-    std::cout << constants[v] << " ";
+  std::cout << "Syntax Error(s): ";
+  for (int j = 0; j < i; j++) {
+    std::cout << syntaxErr[j];
   }
   std::cout << "" << std::endl;
+
+
+
+
+
+
+
+
+
 
 
 
